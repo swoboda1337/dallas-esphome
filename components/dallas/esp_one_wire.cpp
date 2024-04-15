@@ -88,11 +88,7 @@ bool HOT IRAM_ATTR ESPOneWire::read_bit() {
   // whereas on esp-idf it already happens during the pin_mode(OUTPUT)
   // manually correct for this with these constants.
 
-#ifdef USE_ESP32
-  uint32_t timing_constant = 12;
-#else
   uint32_t timing_constant = 14;
-#endif
 
   // measure from start value directly, to get best accurate timing no matter
   // how long pin_mode/delayMicroseconds took
