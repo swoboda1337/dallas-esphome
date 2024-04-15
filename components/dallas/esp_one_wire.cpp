@@ -27,16 +27,16 @@ bool HOT IRAM_ATTR ESPOneWire::reset() {
   // Send 480µs LOW TX reset pulse (drive bus low, delay H)
   pin_.pin_mode(gpio::FLAG_OUTPUT);
   pin_.digital_write(false);
-  delayMicroseconds(480);
+  delayMicroseconds(500);
 
   // Release the bus, delay I
   pin_.pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLUP);
-  delayMicroseconds(70);
+  delayMicroseconds(80);
 
   // sample bus, 0=device(s) present, 1=no device present
   bool r = !pin_.digital_read();
   // delay J
-  delayMicroseconds(410);
+  delayMicroseconds(500);
   return r;
 }
 
@@ -60,6 +60,8 @@ void HOT IRAM_ATTR ESPOneWire::write_bit(bool bit) {
   pin_.digital_write(true);
   // delay B/D
   delayMicroseconds(delay1);
+
+  delayMicroseconds(3);
 }
 
 bool HOT IRAM_ATTR ESPOneWire::read_bit() {
@@ -75,7 +77,8 @@ bool HOT IRAM_ATTR ESPOneWire::read_bit() {
 
   uint32_t start = micros();
   // datasheet says >1µs
-  delayMicroseconds(3);
+  while (micros() - start < 2)
+    ;
 
   // release bus, delay E
   pin_.pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLUP);
@@ -103,6 +106,8 @@ bool HOT IRAM_ATTR ESPOneWire::read_bit() {
   uint32_t now = micros();
   if (now - start < 60)
     delayMicroseconds(60 - (now - start));
+
+  delayMicroseconds(3);
 
   return r;
 }
