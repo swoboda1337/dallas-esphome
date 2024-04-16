@@ -51,17 +51,22 @@ void HOT IRAM_ATTR ESPOneWire::write_bit(bool bit) {
   // time slot: t_slot: min=60µs, max=120µs
   // recovery time: t_rec: min=1µs
   // ds18b20 appears to read the bus after roughly 14µs
-  uint32_t delay0 = bit ? 6 : 60;
-  uint32_t delay1 = bit ? 54 : 5;
+  uint32_t delay0 = bit ? 2 : 60;
+  uint32_t delay1 = bit ? 60 : 5;
+
+  uint32_t start = micros();
+  while (micros() - start < delay0)
+    ;
 
   // delay A/C
-  delayMicroseconds(delay0);
+  // delayMicroseconds(delay0);
   // release bus
-  pin_.digital_write(true);
+  pin_.pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLUP);
   // delay B/D
-  delayMicroseconds(delay1);
+  // delayMicroseconds(delay1);
 
-  delayMicroseconds(3);
+   while (micros() - start < delay1)
+    ;
 }
 
 bool HOT IRAM_ATTR ESPOneWire::read_bit() {
