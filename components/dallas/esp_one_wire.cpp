@@ -52,7 +52,7 @@ void HOT IRAM_ATTR ESPOneWire::write_bit(bool bit) {
   // recovery time: t_rec: min=1µs
   // ds18b20 appears to read the bus after roughly 14µs
   uint32_t delay0 = bit ? 2 : 60;
-  uint32_t delay1 = bit ? 60 : 5;
+  uint32_t delay1 = bit ? 62 :65;
 
   uint32_t start = micros();
   while (micros() - start < delay0)
